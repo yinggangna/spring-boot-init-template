@@ -107,6 +107,21 @@ management:
 
 # 公共配置文件
 spring:
+  # Spring AI相关注解（要调用OpenAI API时需要特殊网络环境，否则会超时）
+  ai:
+    # 智谱 AI
+    zhipuai:
+      # 智谱AI 密钥
+      api-key: 53a7a3a720e043478d5e798c31c6490f.dM0mXWZwg6JNIVR2
+      chat:
+        options:
+          # 模型名称
+          model: GLM-4-Plus
+          # 用于决定生成文本的随机性，值越高表示生成的答案可能性越多样化。
+          temperature: 0.9
+          # 高值生成更多样化的文本，低值生成较为集中和保守的文本。
+          top-p: 0.3
+
   # 项目前置工作 ---- 可自定义
   application:
     # 定义项目名称
@@ -192,27 +207,46 @@ spring:
   # 邮件配置
   mail:
     # todo 是否开启邮件功能（这里的邮件功能指的是模板内增强的邮件工具，预先关闭）
-    enable: false
+    enable: true
     # 发送邮件服务器主机
-    host: smtp.163.com
+    host: smtp.qq.com
     # 发送邮件服务器端口
-    port: 25
+    port: 465
     # 发送邮件的邮箱地址
-    username: xxxxxxxx@163.com
+    username: 1415479273@qq.com
     # 发送邮件的邮箱验证密码或者授权码
-    password: xxxxxxxx
+    password: skiycctgfenogcdh
     # 邮件默认编码
     default-encoding: UTF-8
     # 邮箱通讯协议
     protocol: smtp
+    properties:
+      mail:
+        smtp:
+          # 是否开启 SMTP 身份认证
+          auth: true
+          ssl:
+            # 是否启用 SSL 安全连接（推荐开启）
+            enable: true
+            # 指定使用的 SSL 协议版本，这里为 TLSv1.2
+            protocols: TLSv1.2
+          starttls:
+            # 是否启用 STARTTLS 升级为加密连接（通常和 SSL 二选一，开启 SSL 时应关闭）
+            enable: false
+          # SMTP 连接超时时间（毫秒），连接服务器的最大等待时间
+          connectiontimeout: 5000
+          # SMTP 响应超时时间（毫秒），服务器响应的最大等待时间
+          timeout: 3000
+          # SMTP 写入数据超时时间（毫秒），发送邮件数据的最大等待时间
+          writetimeout: 5000
   # RabbitMQ配置
   rabbitmq:
     # todo 是否开启RabbitMQ（预先关闭）
-    enable: false
+    enable: true
     # 获取消息最大等待时间（单位：毫秒）
     max-await-timeout: 3000
     # 单机 RabbitMQ IP（单价模式配置和集群模式配置只能存在一个）
-    host: 127.0.0.1
+    host: 192.168.3.5
     # 单机 RabbitMQ 端口
     port: 5672
     # 集群RabbitMQ（单价模式配置和集群模式配置只能存在一个）
@@ -220,9 +254,9 @@ spring:
     # 虚拟主机
     virtual-host: /
     # 用户名
-    username: guest
+    username: wyg
     # 密码
-    password: guest
+    password: 0904
     # 消息确认（ACK）
     publisher-confirm-type: correlated #确认消息已发送到交换机(Exchange)
     publisher-returns: true #确认消息已发送到队列(Queue)
@@ -239,16 +273,16 @@ spring:
   autoconfigure:
     exclude:
       # todo 是否开启MongoDB依赖类（如果要启用MongoDB，就将MongoAutoConfiguration注释掉，该配置类一旦被注释，就需要设置MongoDB相关配置，预先关闭）
-      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+#      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
       # todo 是否开启Redis依赖类（如果要启动Redis，就将RedisAutoConfiguration注释掉，该配置类一旦被注释，就需要设置Redis相关配置，预先关闭）
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+#      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
       # todo 是否使用Redis搭配SaToken鉴权认证（如果需要，就将RedisAutoConfiguration和SaTokenDaoRedisJackson同时注释掉，预先不使用）
       - cn.dev33.satoken.dao.SaTokenDaoRedisJackson
   data:
     # 系统缓存Redis配置（这里的Redis配置主要用于鉴权认证等模板自带服务的系统缓存服务，要求Redis版本在7.0以上）
     redis:
       # 单机地址（单价模式配置和集群模式配置只能存在一个）
-      host: 127.0.0.1
+      host: 192.168.3.5
       # 单机端口，默认为6379
       port: 6379
       # 集群地址（单价模式配置和集群模式配置只能存在一个）
@@ -282,7 +316,7 @@ spring:
       # 使用uri进行连接，防止字符拼接错误
       # 如果不需要用户名和密码，即：uri: mongodb://主机地址:主机端口/默认数据库?authSource=admin&maxPoolSize=50&connectTimeoutMS=30000
       # 如果需要用户名和密码，即：uri: mongodb://用户名:密码@主机地址:主机端口/默认数据库?authSource=admin&maxPoolSize=50&connectTimeoutMS=30000
-      uri: mongodb://root:123456@127.0.0.1:27017/init_db?authSource=admin&maxPoolSize=50&connectTimeoutMS=30000
+      uri: mongodb://root:0904@192.168.3.5:27017/init_db?authSource=admin&maxPoolSize=50&connectTimeoutMS=30000
   # 数据源配置
   datasource:
     # 多数据源
@@ -377,9 +411,9 @@ redisson:
   # Redis单机版本
   single-server-config:
     # todo 是否启动单机Redis（Redisson）缓存（预先关闭）
-    enable-single: false
+    enable-single: true
     # 单机地址（一定要在redis协议下）
-    address: redis://127.0.0.1:6379
+    address: redis://192.168.3.5:6379
     # 数据库索引
     database: 1
     # 密码（考虑是否需要密码）
@@ -426,7 +460,7 @@ redisson:
 # Caffeine本地缓存配置
 caffeine:
   # todo 是否启动（预先关闭）
-  enable: false
+  enable: true
   # 最后一次写入或访问后经过固定时间过期，单位：秒
   expired: 1800
   # 缓存初始容量
@@ -453,17 +487,17 @@ oss:
   # MinIO OSS配置
   minio:
     # todo 是否开启（预先关闭）
-    enable: false
+    enable: true
     # 域名（格式：【ip:port】）
-    endpoint: 127.0.0.1:9000
+    endpoint: 192.168.3.5:9000
     # 是否开启TLS
     enable-tls: false
     # 用户的 SecretId
-    secret-id: xxxxxxxx
+    secret-id: uLpiI2c4XIcqYrSPXNog
     # 用户的 SecretKey
-    secret-key: xxxxxxxx
+    secret-key: YuYOuj0ESXsJvjx1dUA8AOPdjIZZwsPA5IVc7oiF
     # 桶名称
-    bucket-name: xxxxxxxx
+    bucket-name: test01
   # 阿里云OSS配置
   ali:
     # todo 是否开启（预先关闭）
@@ -508,9 +542,9 @@ sse:
 # Easy-ES配置
 easy-es:
   # todo 是否启动（预先关闭）
-  enable: false
+  enable: true
   # es连接地址+端口 格式必须为ip:port,如果是集群则可用逗号隔开
-  address: 127.0.0.1:9200
+  address: 192.168.3.5:9200
   ## 如果无账号密码则可不配置此行
   #username:
   ## 如果无账号密码则可不配置此行
@@ -530,7 +564,7 @@ easy-es:
   # 默认为http 可缺省
   schema: http
   # 打印banner 若您不期望打印banner,可配置为false（预先关闭）
-  banner: false
+  banner: true
   # 心跳策略时间 单位:ms
   keep-alive-millis: 30000
   # 连接超时时间 单位:ms

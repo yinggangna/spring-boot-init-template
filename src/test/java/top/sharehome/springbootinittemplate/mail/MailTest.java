@@ -14,7 +14,7 @@ import java.time.Duration;
 @SpringBootTest
 public class MailTest {
 
-    private final String to = "1911261716@qq.com";
+    private final String to = "15102696201@163.com";
 
     /**
      * 测试发送简单文本邮件
